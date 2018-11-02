@@ -9,9 +9,9 @@ import SelectLang from '../SelectLang';
 import styles from './index.less';
 
 export default class GlobalHeaderRight extends PureComponent {
-
-  state = {
-      searchListData: []
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
 
   getNoticeData() {
@@ -64,10 +64,6 @@ export default class GlobalHeaderRight extends PureComponent {
           <Icon type="setting" />
           <FormattedMessage id="menu.account.settings" defaultMessage="account settings" />
         </Menu.Item>
-        <Menu.Item key="triggerError">
-          <Icon type="close-circle" />
-          <FormattedMessage id="menu.account.trigger" defaultMessage="Trigger Error" />
-        </Menu.Item>
         <Menu.Divider />
         <Menu.Item key="logout">
           <Icon type="logout" />
@@ -76,36 +72,33 @@ export default class GlobalHeaderRight extends PureComponent {
       </Menu>
     );
     const noticeData = this.getNoticeData();
+
+    const { mySearchListData = [] } = this.state;
+
     let className = styles.right;
     if (theme === 'dark') {
       className = `${styles.right}  ${styles.dark}`;
     }
     return (
       <div className={className}>
-        {/*头部全文检索*/}
         <HeaderSearch
           className={`${styles.action} ${styles.search}`}
           placeholder={formatMessage({ id: 'component.globalHeader.search' })}
-          dataSource={this.state.searchListData}
+          dataSource={mySearchListData}
           onSearch={value => {
-            //console.log('input', value); // eslint-disable-line
-            {/*自动填充*/}
+            console.info('value', value);
           }}
           onPressEnter={value => {
-            console.log('enter', value); // eslint-disable-line
-            {/*回车搜索*/}
-            if(value && this.state.searchListData.indexOf(value) == -1) {
-              this.state.searchListData.push(value)
+            if (value && mySearchListData.indexOf(value) === -1) {
+              mySearchListData.push(value);
             }
           }}
         />
-        
-        {/*提示*/}
+
         <Tooltip title={formatMessage({ id: 'component.globalHeader.help' })}>
-            <Icon type="question-circle-o" />
+          <Icon type="question-circle-o" />
         </Tooltip>
 
-        {/*通知、消息、事件*/}
         <NoticeIcon
           className={styles.action}
           count={currentUser.notifyCount}
@@ -145,7 +138,6 @@ export default class GlobalHeaderRight extends PureComponent {
           />
         </NoticeIcon>
 
-        {/*用户*/}
         {currentUser.name ? (
           <Dropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>
@@ -162,7 +154,6 @@ export default class GlobalHeaderRight extends PureComponent {
           <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
         )}
 
-        {/*语言选择*/}
         <SelectLang className={styles.action} />
       </div>
     );
